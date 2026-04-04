@@ -6,13 +6,7 @@
  * validation assertions UOS-FOUND-PC-001, UOS-FOUND-PC-002, and UOS-FOUND-PC-003.
  */
 
-import type {
-  ConsumerContract,
-  ContractAssertion,
-  CompatibilityCheckResult,
-  ImpactReport,
-  SupportedSdkVersion,
-} from "./types.js";
+import type { ContractAssertion, SupportedSdkVersion } from "./types.js";
 import {
   COMPATIBILITY_MATRIX,
   getKnownConsumers,
@@ -154,7 +148,18 @@ function verifyPC002(): { passed: boolean; evidence: string[] } {
       evidence.push(`ERROR: Consumer ${consumerId} has no status entries`);
       passed = false;
     } else {
-      evidence.push(`Consumer ${consumerId} has status: ${statuses[0].currentStatus}`);
+      const status = statuses[0];
+      evidence.push(
+        `Consumer ${consumerId} has status: ${status.currentStatus} via ${status.validationMode} evidence (${status.evidenceSource})`
+      );
+      if (!status.maintained) {
+        evidence.push(`ERROR: Consumer ${consumerId} is listed without maintained=true`);
+        passed = false;
+      }
+      if (status.tests.length === 0) {
+        evidence.push(`ERROR: Consumer ${consumerId} has no validation evidence tests`);
+        passed = false;
+      }
     }
   }
 
@@ -165,7 +170,7 @@ function verifyPC002(): { passed: boolean; evidence: string[] } {
       `Compatibility check for 2026.325.0: overall status = ${checkResult.overallStatus}`
     );
     evidence.push(
-      `Supported consumers: ${checkResult.supportedConsumers.length}, Blocked: ${checkResult.blockedConsumers.length}`
+      `Supported consumers: ${checkResult.supportedConsumers.length}, Degraded: ${checkResult.degradedConsumers.length}, Blocked: ${checkResult.blockedConsumers.length}`
     );
   } else {
     evidence.push("ERROR: Compatibility check returned unknown status");
@@ -194,6 +199,15 @@ function verifyPC003(): { passed: boolean; evidence: string[] } {
     evidence.push(
       `Impact report correctly identifies affected repos: ${impactReport.affectedRepos.join(", ")}`
     );
+    const maintainedConsumers = getKnownConsumers();
+    const missingConsumers = maintainedConsumers.filter(
+      (consumerId) => !impactReport.affectedRepos.includes(consumerId)
+    );
+    if (missingConsumers.length > 0) {
+      evidence.push(
+        `Impact report scoped change set excludes unaffected maintained consumers: ${missingConsumers.join(", ")}`
+      );
+    }
   } else {
     evidence.push("ERROR: Impact report did not identify affected repos");
     passed = false;

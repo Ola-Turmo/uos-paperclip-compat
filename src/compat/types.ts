@@ -24,6 +24,9 @@ export interface ConsumerContract {
   currentStatus: ContractStatus;
   lastVerified: string;
   tests: ConsumerTestResult[];
+  evidenceSource: string;
+  maintained: boolean;
+  validationMode: "direct" | "inferred";
 }
 
 export type ContractStatus = "supported" | "degraded" | "unsupported" | "unknown";
@@ -79,6 +82,7 @@ export interface CompatibilityCheckResult {
   adaptersApplied: string[];
   blockedConsumers: string[];
   supportedConsumers: string[];
+  degradedConsumers: string[];
 }
 
 /**

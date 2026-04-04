@@ -25,14 +25,25 @@ describe("plugin scaffold", () => {
     const summary = await harness.getData<{
       version: string;
       overallStatus: string;
+      consumers: {
+        consumerId: string;
+        evidenceSource: string;
+        maintained: boolean;
+        validationMode: string;
+      }[];
       supportedConsumers: string[];
+      degradedConsumers: string[];
       blockedConsumers: string[];
       consumerCount: number;
     }>("compat:summary");
     
     expect(summary.version).toBe("2026.325.0");
     expect(summary.consumerCount).toBeGreaterThan(0);
+    expect(summary.consumers.some((consumer) => consumer.consumerId === "uos-plugin-operations-cockpit")).toBe(true);
+    expect(summary.consumers.every((consumer) => consumer.maintained)).toBe(true);
+    expect(summary.consumers.every((consumer) => consumer.evidenceSource.length > 0)).toBe(true);
     expect(Array.isArray(summary.supportedConsumers)).toBe(true);
+    expect(Array.isArray(summary.degradedConsumers)).toBe(true);
     expect(Array.isArray(summary.blockedConsumers)).toBe(true);
 
     const consumers = await harness.getData<{

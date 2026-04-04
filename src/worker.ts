@@ -27,7 +27,9 @@ const plugin = definePlugin({
       return {
         version: check.sdkVersion,
         overallStatus: check.overallStatus,
+        consumers: check.consumers,
         supportedConsumers: check.supportedConsumers,
+        degradedConsumers: check.degradedConsumers,
         blockedConsumers: check.blockedConsumers,
         consumerCount: check.consumers.length,
       };
