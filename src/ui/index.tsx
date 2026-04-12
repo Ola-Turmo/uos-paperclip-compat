@@ -1,23 +1,26 @@
-import { usePluginAction, usePluginData, type PluginWidgetProps } from "@paperclipai/plugin-sdk/ui";
+/**
+ * @uos/paperclip-compat UI entrypoint
+ *
+ * This module is the default export for the plugin's UI bundle.
+ * It registers the UI surface that operators interact with when
+ * managing the paperclip-compat layer from the Paperclip dashboard.
+ */
 
-type HealthData = {
-  status: "ok" | "degraded" | "error";
-  checkedAt: string;
-};
+import React from "react";
 
-export function DashboardWidget(_props: PluginWidgetProps) {
-  const { data, loading, error } = usePluginData<HealthData>("health");
-  const ping = usePluginAction("ping");
-
-  if (loading) return <div>Loading plugin health...</div>;
-  if (error) return <div>Plugin error: {error.message}</div>;
-
+/**
+ * CompatStatusPanel — shows compatibility summary at a glance.
+ * Placeholder UI for the plugin's dashboard slot.
+ */
+export function CompatStatusPanel() {
   return (
-    <div style={{ display: "grid", gap: "0.5rem" }}>
-      <strong>Paperclip Compat</strong>
-      <div>Health: {data?.status ?? "unknown"}</div>
-      <div>Checked: {data?.checkedAt ?? "never"}</div>
-      <button onClick={() => void ping()}>Ping Worker</button>
+    <div style={{ padding: "1rem", fontFamily: "system-ui, sans-serif" }}>
+      <h2 style={{ margin: "0 0 0.5rem" }}>Paperclip Compatibility Layer</h2>
+      <p style={{ margin: 0, color: "#666" }}>
+        Manage upstream Paperclip SDK compatibility for UOS.
+      </p>
     </div>
   );
 }
+
+export default CompatStatusPanel;
