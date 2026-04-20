@@ -8,7 +8,7 @@ import type { PaperclipPluginManifestV1 } from "@paperclipai/plugin-sdk";
  * can move with confidence.
  */
 export const manifest: PaperclipPluginManifestV1 = {
-  id: "@uos/paperclip-compat",
+  id: "uos.paperclip-compat",
   apiVersion: 1,
   version: "0.1.0",
   displayName: "Paperclip Compatibility Layer",
@@ -16,7 +16,6 @@ export const manifest: PaperclipPluginManifestV1 = {
     "Compatibility layer for Paperclip SDK, shared models, and host coupling. Absorbs upstream Paperclip changes through adapter-first patterns.",
   author: "UOS Team <team@uos.dev>",
   categories: ["connector"],
-  minimumHostVersion: "2026.325.0",
   capabilities: [
     "companies.read",
     "projects.read",
